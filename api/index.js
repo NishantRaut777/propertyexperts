@@ -19,6 +19,20 @@ app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/auth", authRouter);
 
+// middleware for handling error
+app.use(( err, req, res, next ) => {
+    // if statusCode is there then get that else assign 500
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+
+    return res.status(statusCode).json({
+        success: false,
+        statusCode : statusCode,
+        message: message
+    });
+});
+
+
 app.listen(3001, ()=> {
     console.log("Server is running on port 3001");
 });
