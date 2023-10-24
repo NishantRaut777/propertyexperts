@@ -19,9 +19,7 @@ const Profile = () => {
 
   // for handling form data
   const [formData, setFormData] = useState({});
-
-  console.log(fileUploadError);
-
+  
 
   useEffect(() => {
     if(file) {
