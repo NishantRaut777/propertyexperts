@@ -14,6 +14,9 @@ import {
     FaShare,
   } from 'react-icons/fa';
 
+import { useSelector } from "react-redux";
+import Contact from '../components/Contact';
+
 const Listing = () => {
 
     SwiperCore.use( [Navigation] );
@@ -25,6 +28,12 @@ const Listing = () => {
 
     // state to handle copy url of listing
     const [copied, setCopied] = useState(false);
+
+    // get current user
+    const { currentUser } = useSelector((state) => state.user);
+
+    // contact landlord state
+    const [contact, setContact] = useState(false);
    
     useEffect(() => {
         const fetchListing = async () => {
@@ -147,11 +156,21 @@ const Listing = () => {
                   {listing.furnished ? "Furnished" : "Unfurnished"}
                 </li>
               </ul>
+                
+                {/* If user is logged in and loggedIn user's id is not equal to listing's userId then only show this button */}
+               { currentUser && listing.userRef !== currentUser._id && !contact && (
+                <button 
+                onClick={() => setContact(true)}
+                className='bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 p-3'>
+                    Contact landlord
+                </button>
+               )}
 
+               { contact && <Contact listing={listing} /> }
             </div>
           </div>
         )}
-        
+
       </main>
     );
 }
