@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import ListingItem from '../components/ListingItem';
 
 const Search = () => {
 
@@ -104,6 +105,7 @@ const Search = () => {
         navigate(`/search?${searchQuery}`);
     };
 
+
   return (
     <div className='flex flex-col md:flex-row'>
       <div className='p-7 border-b-2 md:border-r-2 md:min-h-screen'>
@@ -174,11 +176,12 @@ const Search = () => {
                 className='border rounded-lg p-3' 
                 defaultValue={"created_at_desc"}
                 onChange={handleChange}
-                >
-                    <option value="regularPrice_desc">Price high to low</option>
-                    <option value="regularPrice_asc">Price low to high</option>
+                >   
                     <option value="createdAt_desc">Latest</option>
                     <option value="createdAt_asc">Oldest</option>
+                    <option value="regularPrice_desc">Price high to low</option>
+                    <option value="regularPrice_asc">Price low to high</option>
+                    
                 </select>
             </div>
 
@@ -188,8 +191,27 @@ const Search = () => {
         </form>
       </div>
 
-      <div className=''>
+      <div className='flex-1'>
         <h1 className='text-3xl font-semibold border-b p-3 text-slate-700 mt-5'>Listing Results:</h1>
+
+        <div className='p-7 flex flex-wrap gap-4'>
+            {/* It there are no listings show this message */}
+            { !loading && listings.length === 0 && (
+                <p>No Listings Found!</p>
+            )}
+
+            { loading && (
+                <p className='text-xl text-slate-700 text-center w-full'>Loading...</p>
+            )
+            }
+
+            {/* map through listings */}
+            { !loading && listings &&
+              listings.map((listing) => (
+                <ListingItem key={listing._id} listing={listing} />
+              ))
+            }
+        </div>
       </div>
     </div>
   )

@@ -339,7 +339,11 @@ const UpdateListing = () => {
               />
               <div className="flex flex-col items-center">
                 <p>Regular Price</p>
-                <span className="text-xs">(&#8377; / month)</span>
+                {/* if listing type is rent then only show per month */}
+                { formData.type === "rent" && (
+                  <span className="text-xs">(&#8377; / month)</span>
+                )}
+                
               </div>
             </div>
 
