@@ -21,6 +21,9 @@ const Search = () => {
 
     const [listings, setListings] = useState([]);
 
+    // state to handle show more
+    const [showMore, setShowMore] = useState(false);
+
     // whenever search URL changes do this
     useEffect(() => {
 
@@ -49,9 +52,18 @@ const Search = () => {
         // making api call
         const fetchListings = async () => {
             setLoading(true);
+            setShowMore(false);
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/listing/get?${searchQuery}`);
             const data = await res.json();
+
+            // If there are more than 8 listings display set show more to true
+            if (data.length > 8){
+                setShowMore(true);
+            } else{
+                setShowMore(false);
+            }
+
             setListings(data);
             setLoading(false);
         };
@@ -103,6 +115,25 @@ const Search = () => {
 
         // navigate to this particular searchQuery
         navigate(`/search?${searchQuery}`);
+    };
+
+    // handling show more
+    const handleShowMoreClick = async () => {
+        const numberOfListings = listings.length;
+        const startIndex = numberOfListings;
+
+        // getting searchurl to get the data according to filter
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set("startIndex", startIndex);
+        const searchQuery = urlParams.toString();
+        
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
+        const data = await res.json();
+        if (data.length < 9){
+            setShowMore(false);
+        } 
+
+        setListings([...listings, ...data]);
     };
 
 
@@ -211,6 +242,14 @@ const Search = () => {
                 <ListingItem key={listing._id} listing={listing} />
               ))
             }
+
+            { showMore && (
+                <button onClick={handleShowMoreClick}
+                className='text-green-700 hover:underline p-7 text-center w-full'
+                >
+                    Show more
+                </button>
+            )}
         </div>
       </div>
     </div>
